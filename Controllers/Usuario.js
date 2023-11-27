@@ -1,92 +1,47 @@
 const Usuario = require('../Models/Usuario.model');
 
-// Obtener todos los usuarios
-const obtenerUsuarios = async (req, res) => {
+// Agregar un nuevo usuario
+const obtenerUsuario = async (req, res) => {
    try {
-     const usuarios = await Usuario.find();
-     res.status(200).json(usuarios);
-   } catch (error) {
-     res.status(500).json({ error: error.message });
-   }
- };
- 
- // Crear un nuevo usuario
- const crearUsuario = async (req, res) => {
-   const { Nombre, Email } = req.body;
-   try {
-     const nuevoUsuario = await Usuario.create({ Nombre, Email });
-     res.status(201).json(nuevoUsuario);
+     const { name, email } = req.body;
+     const usuario = new Usuario({ name, email });
+     await usuario.save();
+     res.status(201).json({ mensaje: 'Usuario agregado correctamente', usuario });
    } catch (error) {
      res.status(400).json({ error: error.message });
    }
  };
  
- // Obtener un usuario por su ID
- const obtenerUsuarioPorId = async (req, res) => {
-   const { id } = req.params;
-   try {
-     const usuario = await Usuario.findById(id);
-     if (!usuario) {
-       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-     }
-     res.status(200).json(usuario);
-   } catch (error) {
-     res.status(500).json({ error: error.message });
-   }
- };
- 
- // Buscar un usuario por su dirección de correo electrónico (email)
+ // Buscar usuario por email
  const buscarUsuarioPorEmail = async (req, res) => {
-   const { email } = req.params;
    try {
-     const usuario = await Usuario.findOne({ Email: email });
-     if (!usuario) {
+     const { email } = req.query;
+     const usuarioEncontrado = await Usuario.findOne({ email });
+     if (!usuarioEncontrado) {
        return res.status(404).json({ mensaje: 'Usuario no encontrado' });
      }
-     res.status(200).json(usuario);
+     res.status(200).json(usuarioEncontrado);
    } catch (error) {
-     res.status(500).json({ error: error.message });
+     res.status(400).json({ error: error.message, mensaje: 'Error al buscar usuario por email' });
    }
  };
  
- // Actualizar un usuario por su ID
- const actualizarUsuario = async (req, res) => {
-   const { id } = req.params;
-   const { Nombre, Email } = req.body;
+ // Borrar usuario por email
+ const borrarUsuarioPorEmail = async (req, res) => {
    try {
-     const usuarioActualizado = await Usuario.findByIdAndUpdate(
-       id,
-       { Nombre, Email },
-       { new: true }
-     );
-     if (!usuarioActualizado) {
-       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+     const { email } = req.params;
+     const usuarioBorrado = await Usuario.findOneAndDelete({ email });
+     if (!usuarioBorrado) {
+       return res.status(404).json({ mensaje: 'Usuario no encontrado para borrar' });
      }
-     res.status(200).json(usuarioActualizado);
+     res.status(200).json({ mensaje: 'Usuario borrado exitosamente', usuario: usuarioBorrado });
    } catch (error) {
      res.status(400).json({ error: error.message });
    }
  };
- 
- // Eliminar un usuario por su ID
- const eliminarUsuario = async (req, res) => {
-   const { id } = req.params;
-   try {
-     const usuarioEliminado = await Usuario.findByIdAndDelete(id);
-     if (!usuarioEliminado) {
-       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-     }
-     res.status(200).json({ mensaje: 'Usuario eliminado correctamente' });
-   } catch (error) {
-     res.status(500).json({ error: error.message });
-   }
- };
- 
- module.exports = {
-   obtenerUsuarios,
-   crearUsuario,
-   obtenerUsuarioPorId,
-   buscarUsuarioPorEmail,
-   actualizarUsuario,
-   eliminarUsuario,
- };
+
+module.exports = { 
+   obtenerUsuario, 
+   buscarUsuarioPorEmail, 
+   borrarUsuarioPorEmail 
+};
