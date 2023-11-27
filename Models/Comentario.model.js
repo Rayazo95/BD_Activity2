@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const ComentarioSchema = new mongoose.Schema(
    {
       contenido: {

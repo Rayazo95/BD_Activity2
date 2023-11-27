@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const PublicacionSchema = new mongoose.Schema(
    {
       titulo: {
