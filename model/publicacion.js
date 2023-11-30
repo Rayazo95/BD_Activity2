@@ -1,29 +1,28 @@
-const { Sequelize } = require('sequelize');
-const sequelize = require("../index")
+const { DataTypes } = require('sequelize');
+const { sequelize } = require("../index");
 
-const Publicacion = sequelize.define('Publicaciones', {
+const Publicacion = sequelize.define('Publicacion', {
   id: {
-    type: Sequelize.INTEGER,
-    primaryKey : true,
-    autoIncrement : true
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   },
   titulo: {
-    type: Sequelize.STRING
+    type: DataTypes.STRING
   },
   contenido: {
-    type: Sequelize.TEXT
+    type: DataTypes.TEXT
   },
   fechaCreacion: {
-    type: Sequelize.DATE
+    type: DataTypes.DATE
   },
   usuarioId: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     references: {
-        model: "Usuarios",
-        key: "id"
+      model: 'Usuarios',
+      key: 'id'
     }
   }
-}
+});
 
-);
 module.exports = Publicacion;
